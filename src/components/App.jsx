@@ -1,25 +1,49 @@
-import Searchbar from "SearchBar";
-import { Component } from "react";
-import {ToastContainer} from 'react-toastify';
-// code API 36713739-10096fbc35ee82e827459eaa7
+// 
 
-export default class App extends Component {
+import React, { Component } from "react";
+import ImageGallery from "./ImageGallery";
+import Modal from "./modal";
+import Searchbar from "./SearchBar";
+
+class App extends Component {
+
   state = {
-    query: '',
+    inputValue: '',
+    modalImg: '',
+    showModal: false,
     page: 1,
-    per_page: 12,
   }
 
-handleSubmit = query =>{
-  this.setState({query});
-}
-  render(){
-    const {query} = this.state;
-    return(
-      <div>
-        <Searchbar onSubmit={this.handleSubmit}/>
-        <ToastContainer autoClose={3000} />
-      </div>
+  getInputValue = handleValue => {
+    this.setState({ inputValue: handleValue, page: 1 })
+  }
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }))
+  }
+
+  getLargeImg = url => {
+    this.toggleModal();
+    this.setState({ modalImg: url });
+  }
+
+  loadMoreBtn = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }))
+  }
+
+  render() {
+    const { inputValue ,modalImg, showModal ,page} = this.state;
+
+    return (
+      <>
+        <Searchbar getInputValue={this.getInputValue}/>
+        <ImageGallery inputValue={inputValue} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={ page}/>
+        {showModal && <Modal url={modalImg} onClose={this.toggleModal} />}
+      </>
     )
   }
 }
+
+export default App;
