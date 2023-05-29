@@ -14,11 +14,11 @@ export default class Modal extends Component{
     }
 
     componentWillUnmount() {
-        window.addEventListener('keydown', this.clickEsc);
+        window.removeEventListener('keydown', this.clickEsc);
     }
 
     clickBackDrop = event => {
-        if(event.target === event.currentTaregt){
+        if (event.target === event.currentTarget) {
             this.props.onClose();
         }
     }
@@ -31,8 +31,8 @@ export default class Modal extends Component{
 
     render(){
         return(
-            <div className="overlay" onClick={this.clickBackdrop}>
-                <div className="modal">
+            <div className="Overlay" onClick={this.clickBackDrop} >
+                <div className="Modal">
                     <img src={this.props.url} alt="" />
                 </div>
             </div>

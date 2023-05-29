@@ -1,21 +1,20 @@
-// 
-
 import React, { Component } from "react";
 import ImageGallery from "./ImageGallery";
 import Modal from "./modal";
 import Searchbar from "./SearchBar";
+import {ToastContainer} from 'react-toastify';
 
 class App extends Component {
 
   state = {
-    inputValue: '',
+    query: '',
     modalImg: '',
     showModal: false,
     page: 1,
   }
 
-  getInputValue = handleValue => {
-    this.setState({ inputValue: handleValue, page: 1 })
+  handleSubmit = handleValue => {
+    this.setState({ query: handleValue, page: 1 })
   }
 
   toggleModal = () => {
@@ -34,12 +33,15 @@ class App extends Component {
   }
 
   render() {
-    const { inputValue ,modalImg, showModal ,page} = this.state;
+    const { query, modalImg, showModal ,page} = this.state;
 
     return (
       <>
-        <Searchbar getInputValue={this.getInputValue}/>
-        <ImageGallery inputValue={inputValue} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={ page}/>
+        <Searchbar onSubmit={this.handleSubmit}/>
+        <ToastContainer 
+          autoClose={3000}
+        />
+        <ImageGallery query={query} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={ page}/>
         {showModal && <Modal url={modalImg} onClose={this.toggleModal} />}
       </>
     )
