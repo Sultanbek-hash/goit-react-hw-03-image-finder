@@ -1,9 +1,8 @@
 import { Component } from "react";
 import PropTypes from 'prop-types';
-import ImageGalleryItem from "components/ImageGalleryItem";
-import Loader from "./Loader";
-import Button from "./Button";
-import getImages from "components/Api";
+import ImageGalleryItem from "components/ImageGalleryItem/ImageGalleryItem";
+import Loader from "../Loader/Loader";
+import Button from "../Button/Button";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,12 +10,12 @@ export default class ImageGallery extends Component{
     static propTypes = {
         onClick: PropTypes.func.isRequired,
         query: PropTypes.string.isRequired,
-      };
-      
+      };     
       state ={
         images: [], 
         modalImg: '',
       }
+      
 render(){
     const {images, status} = this.state;
 

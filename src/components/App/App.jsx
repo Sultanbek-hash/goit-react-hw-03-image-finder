@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import ImageGallery from "./ImageGallery";
-import Modal from "./Modal";
-import Searchbar from "./SearchBar";
+import ImageGallery from "../ImageGallery/ImageGallery";
+import Modal from "../Modal/Modal";
+import Searchbar from "../SearchBar/SearchBar";
 import {ToastContainer} from 'react-toastify';
-import getImages from "components/Api";
+import getImages from "components/Servise/Api";
 
 class App extends Component {
 
@@ -22,7 +22,7 @@ class App extends Component {
     const prevPage = prevProps.page;
     const nextPage = this.props.page;
 
-    if(prevName !== nextName || prevPage !== nextPage > 1){
+    if(prevName !== nextName || prevPage !== nextPage){
         this.fetchLoadMore();
     }
   }
