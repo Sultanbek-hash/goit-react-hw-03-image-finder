@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import Modal from "../Modal/Modal";
 import Searchbar from "../SearchBar/SearchBar";
-import {ToastContainer, toast} from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import getImages from "components/Servise/Api";
 
 class App extends Component {  
@@ -32,20 +32,22 @@ class App extends Component {
     const {query, page} = this.state;
     getImages(query, page)
     .then (response => {
+      const {totalHits} = response;
         this.setState(prevState => ({
             images: [...prevState.images, ...response.hits ],
-            showBtn: page < Math.ceil(response.totalHits/12),
+            showBtn: page < Math.ceil(totalHits/12),
+            status: 'resolve',
         }));
     })
     .catch(error => this.setState({error: error.message, status: 'rejected'}))
 }
   
   handleSubmit = handleValue => {
-    this.setState({ query: handleValue, page: 1, images: []})
+    this.setState({ query: handleValue, page: 1, images: [], showBtn: false});
   }
 
   toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }))
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
   }
 
   getLargeImg = url => {
@@ -68,7 +70,7 @@ class App extends Component {
         <ToastContainer 
           autoClose={3000}
         />  
-        <ImageGallery query={query} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={ page}/>
+        <ImageGallery query={query} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={page}/>
         {showModal && <Modal url={modalImg} onClose={this.toggleModal} />}
       </>
     )
