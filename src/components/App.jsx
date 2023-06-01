@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import ImageGallery from "./ImageGallery";
-import Modal from "./modal";
+import Modal from "./Modal";
 import Searchbar from "./SearchBar";
 import {ToastContainer} from 'react-toastify';
+import getImages from "components/Api";
 
 class App extends Component {
 
@@ -10,11 +11,38 @@ class App extends Component {
     query: '',
     modalImg: '',
     showModal: false,
+    showBtn: false,
     page: 1,
+    images: [],
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const prevName = prevProps.query;
+    const nextName = this.props.query;
+    const prevPage = prevProps.page;
+    const nextPage = this.props.page;
+
+    if(prevName !== nextName || prevPage !== nextPage > 1){
+        this.fetchLoadMore();
+    }
+  }
+
+  fetchLoadMore = () => {
+    const {query, page} = this.props;
+    getImages(query, page)
+    .then (response => {
+        const { hits, totalHits } = response.data;
+        this.setState(prevState => ({
+            images: [...hits, ...prevState.images ],
+            showBtn: this.state.page < Math.ceil(totalHits/12),
+            status: 'resolve',
+        }));
+    })
+    .catch(error => this.setState({ status: 'rejected'}))
+}
+  
   handleSubmit = handleValue => {
-    this.setState({ query: handleValue, page: 1 })
+    this.setState({ query: handleValue, page: 1, images: [] })
   }
 
   toggleModal = () => {
@@ -33,7 +61,7 @@ class App extends Component {
   }
 
   render() {
-    const { query, modalImg, showModal ,page} = this.state;
+    const { query, modalImg, showModal, page} = this.state;
 
     return (
       <>

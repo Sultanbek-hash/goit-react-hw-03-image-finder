@@ -6,9 +6,6 @@ export default class Modal extends Component{
         url: PropTypes.string.isRequired,
         onClose: PropTypes.func.isRequired,
     };
-
-    state = {}
-
     componentDidMount() {
         window.addEventListener('keydown', this.clickEsc);
     }
