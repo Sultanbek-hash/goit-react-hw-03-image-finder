@@ -13,7 +13,7 @@ export default class ImageGallery extends Component{
       };     
       state ={
         images: [], 
-        modalImg: '',
+        status: 'idle',
       }
       
 render(){

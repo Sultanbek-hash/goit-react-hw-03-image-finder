@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import Modal from "../Modal/Modal";
 import Searchbar from "../SearchBar/SearchBar";
-import {ToastContainer} from 'react-toastify';
+import {ToastContainer, toast} from 'react-toastify';
 import getImages from "components/Servise/Api";
 
-class App extends Component {
+class App extends Component {  
 
   state = {
     query: '',
@@ -14,13 +14,14 @@ class App extends Component {
     showBtn: false,
     page: 1,
     images: [],
+    error: null,
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevName = prevProps.query;
-    const nextName = this.props.query;
-    const prevPage = prevProps.page;
-    const nextPage = this.props.page;
+  componentDidUpdate(_, prevState) {
+    const prevName = prevState.query;
+    const nextName = this.state.query;
+    const prevPage = prevState.page;
+    const nextPage = this.state.page;
 
     if(prevName !== nextName || prevPage !== nextPage){
         this.fetchLoadMore();
@@ -28,21 +29,19 @@ class App extends Component {
   }
 
   fetchLoadMore = () => {
-    const {query, page} = this.props;
+    const {query, page} = this.state;
     getImages(query, page)
     .then (response => {
-        const { hits, totalHits } = response.data;
         this.setState(prevState => ({
-            images: [...hits, ...prevState.images ],
-            showBtn: this.state.page < Math.ceil(totalHits/12),
-            status: 'resolve',
+            images: [...prevState.images, ...response.hits ],
+            showBtn: page < Math.ceil(response.totalHits/12),
         }));
     })
-    .catch(error => this.setState({ status: 'rejected'}))
+    .catch(error => this.setState({error: error.message, status: 'rejected'}))
 }
   
   handleSubmit = handleValue => {
-    this.setState({ query: handleValue, page: 1, images: [] })
+    this.setState({ query: handleValue, page: 1, images: []})
   }
 
   toggleModal = () => {
@@ -68,7 +67,7 @@ class App extends Component {
         <Searchbar onSubmit={this.handleSubmit}/>
         <ToastContainer 
           autoClose={3000}
-        />
+        />  
         <ImageGallery query={query} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={ page}/>
         {showModal && <Modal url={modalImg} onClose={this.toggleModal} />}
       </>
