@@ -198,6 +198,13 @@ img {
   height: 100%;
 }
 
+.Loader{
+  display: flex;
+  justify-content: center;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
 /*
 * Стили компонента Buton (Load more)
 */
@@ -229,3 +236,5 @@ img {
 .Button:focus {
   background-color: #303f9f;
 }
+
+

@@ -4,6 +4,8 @@ import Modal from "../Modal/Modal";
 import Searchbar from "../SearchBar/SearchBar";
 import {ToastContainer} from 'react-toastify';
 import getImages from "components/Servise/Api";
+import Button from "../Button/Button";
+import Loader from "components/Loader/Loader";
 
 class App extends Component {  
 
@@ -15,6 +17,8 @@ class App extends Component {
     page: 1,
     images: [],
     error: null,
+    loading: false,
+    status: 'idle',
   }
 
   componentDidUpdate(_, prevState) {
@@ -30,16 +34,18 @@ class App extends Component {
 
   fetchLoadMore = () => {
     const {query, page} = this.state;
-    getImages(query, page)
-    .then (response => {
-      const {totalHits} = response;
-        this.setState(prevState => ({
-            images: [...prevState.images, ...response.hits ],
-            showBtn: page < Math.ceil(totalHits/12),
-            status: 'resolve',
-        }));
-    })
-    .catch(error => this.setState({error: error.message, status: 'rejected'}))
+    this.setState({loading: true});
+      getImages(query, page)
+      .then (response => {
+        const {totalHits} = response;
+          this.setState(prevState => ({
+              images: [...prevState.images, ...response.hits ],
+              showBtn: page < Math.ceil(totalHits/12),
+              status: 'resolve',
+          }));
+      })
+      .catch(error => this.setState({error}))
+      .finally(() => this.setState({loading: false}));
 }
   
   handleSubmit = handleValue => {
@@ -62,19 +68,20 @@ class App extends Component {
   }
 
   render() {
-    const { query, modalImg, showModal, page} = this.state;
+    const {images, modalImg, showModal, query, showBtn, loading, error} = this.state;
 
-    return (
-      <>
-        <Searchbar onSubmit={this.handleSubmit}/>
-        <ToastContainer 
-          autoClose={3000}
-        />  
-        <ImageGallery query={query} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={page}/>
+      return (
+        <>
+         <Searchbar query={query} onSubmit={this.handleSubmit}/>
+        <ToastContainer autoClose={3000} />  
+        <ImageGallery images={images} onClick={this.getLargeImg} />
         {showModal && <Modal url={modalImg} onClose={this.toggleModal} />}
-      </>
-    )
-  }
+        {loading && <Loader />}
+        {showBtn && <Button onClick={this.loadMoreBtn}/> }
+        {error && <h1> {error.message} </h1>}
+        </>
+      )
+    }
 }
 
 export default App;

@@ -1,30 +1,8 @@
-import { Component } from "react";
 import PropTypes from 'prop-types';
 import ImageGalleryItem from "components/ImageGalleryItem/ImageGalleryItem";
-import Loader from "../Loader/Loader";
-import Button from "../Button/Button";
-import {toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
-export default class ImageGallery extends Component{
-    static propTypes = {
-        onClick: PropTypes.func.isRequired,
-        query: PropTypes.string.isRequired,
-      };     
-      state ={
-        images: [], 
-        status: 'idle',
-      }
-      
-render(){
-    const {images, status} = this.state;
-
-    if(status === 'pending'){
-        return <Loader />
-    }
-
-    if(status === 'resolve'){
-        return(
+export default function ImageGallery({images, onClick}){  
+        return (
             <>
             <ul className="ImageGallery">
                 {images.map(({id, largeImageURL, tags}) => (
@@ -32,17 +10,15 @@ render(){
                         key={id}
                         url={largeImageURL}
                         tags={tags}
-                        onClick={this.props.onClick}
+                        onClick={onClick}
                     />
                 ))}
             </ul>
-            {images.length !== 0 ? (
-                <Button onClick={this.props.loadMoreBtn} />
-            ) : (
-                toast.error('No result')
-            )}
-        </>
+            </>
         );
-        } 
-    }  
+}
+
+ImageGallery.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    images: PropTypes.array.isRequired,
 }

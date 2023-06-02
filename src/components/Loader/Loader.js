@@ -2,7 +2,7 @@ import {Triangle} from 'react-loader-spinner';
 
 export default function Loader() {
     return(
-        <div>
+        <div className='Loader'>
     <Triangle
         height="80"
         width="80"
@@ -11,7 +11,7 @@ export default function Loader() {
         wrapperStyle={{}}
         wrapperClassName=""
         visible={true}
-/>
+    />
 </div>
     )
 }
