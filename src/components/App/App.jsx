@@ -18,7 +18,6 @@ class App extends Component {
     images: [],
     error: null,
     loading: false,
-    status: 'idle',
   }
 
   componentDidUpdate(_, prevState) {
@@ -41,7 +40,6 @@ class App extends Component {
           this.setState(prevState => ({
               images: [...prevState.images, ...response.hits ],
               showBtn: page < Math.ceil(totalHits/12),
-              status: 'resolve',
           }));
       })
       .catch(error => this.setState({error}))
